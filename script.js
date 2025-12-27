@@ -80,6 +80,12 @@ const displayMovements = function (movements) {
 };
 
 displayMovements(account1.movements);
+// Calculate and display balance
+const calcDisplayBalance = function (movements) {
+  const balance = movements.reduce((acc, move) => acc + move, 0);
+  labelBalance.textContent = `${balance} EUR`;
+};
+calcDisplayBalance(account1.movements);
 // Create username
 const createUsernames = function (accounts) {
   accounts.forEach(function (acc) {
@@ -92,7 +98,7 @@ const createUsernames = function (accounts) {
 };
 
 createUsernames(accounts);
-console.log(accounts);
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
