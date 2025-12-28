@@ -79,34 +79,32 @@ const displayMovements = function (movements) {
   });
 };
 
-displayMovements(account1.movements);
 // Calculate and display balance
 const calcDisplayBalance = function (movements) {
   const balance = movements.reduce((acc, move) => acc + move, 0);
   labelBalance.textContent = `${balance}€`;
 };
-calcDisplayBalance(account1.movements);
-//Disply summary of account
-const calcDisplaySummary = function (movements) {
-  const incomes = movements
+
+//Display summary of account
+const calcDisplaySummary = function (acc) {
+  const incomes = acc.movements
     .filter(move => move > 0)
     .reduce((acc, move) => acc + move, 0);
   labelSumIn.textContent = `${incomes}€`;
-  const out = movements
+  const out = acc.movements
     .filter(move => move < 0)
     .reduce((acc, move) => acc + move, 0);
   labelSumOut.textContent = `${Math.abs(out)}€`;
 
-  const interest = movements
+  const interest = acc.movements
     .filter(move => move > 0)
-    .map(deposit => (deposit * 1.2) / 100)
+    .map(deposit => (deposit * acc.interestRate) / 100)
     .filter(int => int >= 1)
     .reduce((acc, int) => acc + int, 0);
   labelSumInterest.textContent = interest;
 };
 
-calcDisplaySummary(account1.movements);
-// Create username
+// Create usernames
 const createUsernames = function (accounts) {
   accounts.forEach(function (acc) {
     acc.username = acc.owner
@@ -118,6 +116,35 @@ const createUsernames = function (accounts) {
 };
 
 createUsernames(accounts);
+
+// Implementing Login
+let currentAccount;
+btnLogin.addEventListener('click', function (e) {
+  e.preventDefault();
+  currentAccount = accounts.find(
+    acc => acc.username === inputLoginUsername.value
+  );
+  console.log(currentAccount);
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    // Display UI and message
+    labelWelcome.textContent = `Welcome back, ${
+      currentAccount.owner.split(' ')[0]
+    }`;
+    containerApp.style.opacity = 1;
+    // Clear input fields
+    inputLoginUsername.value = inputLoginPin.value = '';
+    inputLoginPin.blur();
+    // Display movements
+    displayMovements(currentAccount.movements);
+    // Display balance
+    calcDisplayBalance(currentAccount.movements);
+    // Display summary
+    calcDisplaySummary(currentAccount);
+  } else {
+    labelWelcome.textContent = `Wrong username or pin! Please login with correct information`;
+    containerApp.style.opacity = 0;
+  }
+});
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
