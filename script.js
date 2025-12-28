@@ -83,9 +83,29 @@ displayMovements(account1.movements);
 // Calculate and display balance
 const calcDisplayBalance = function (movements) {
   const balance = movements.reduce((acc, move) => acc + move, 0);
-  labelBalance.textContent = `${balance} EUR`;
+  labelBalance.textContent = `${balance}€`;
 };
 calcDisplayBalance(account1.movements);
+//Disply summary of account
+const calcDisplaySummary = function (movements) {
+  const incomes = movements
+    .filter(move => move > 0)
+    .reduce((acc, move) => acc + move, 0);
+  labelSumIn.textContent = `${incomes}€`;
+  const out = movements
+    .filter(move => move < 0)
+    .reduce((acc, move) => acc + move, 0);
+  labelSumOut.textContent = `${Math.abs(out)}€`;
+
+  const interest = movements
+    .filter(move => move > 0)
+    .map(deposit => (deposit * 1.2) / 100)
+    .filter(int => int >= 1)
+    .reduce((acc, int) => acc + int, 0);
+  labelSumInterest.textContent = interest;
+};
+
+calcDisplaySummary(account1.movements);
 // Create username
 const createUsernames = function (accounts) {
   accounts.forEach(function (acc) {
