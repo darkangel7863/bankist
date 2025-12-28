@@ -147,7 +147,8 @@ btnLogin.addEventListener('click', function (e) {
     inputLoginPin.blur();
     UpdateUI(currentAccount);
   } else {
-    labelWelcome.textContent = `Wrong username or pin! Please login with correct information`;
+    labelWelcome.textContent =
+      'Wrong username or pin! Please login with correct information';
     containerApp.style.opacity = 0;
   }
 });
@@ -173,6 +174,27 @@ btnTransfer.addEventListener('click', function (e) {
   }
 });
 
+// Implementing Close account
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  if (
+    inputCloseUsername.value === currentAccount.username &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    const index = accounts.findIndex(
+      acc => acc.username === currentAccount.username
+    );
+
+    // Delete Account
+    accounts.splice(index, 1);
+
+    // Hide Ui
+    labelWelcome.textContent = 'Log in to get started';
+    containerApp.style.opacity = 0;
+  }
+  inputCloseUsername.value = inputClosePin.value = '';
+});
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
