@@ -80,9 +80,9 @@ const displayMovements = function (movements) {
 };
 
 // Calculate and display balance
-const calcDisplayBalance = function (movements) {
-  const balance = movements.reduce((acc, move) => acc + move, 0);
-  labelBalance.textContent = `${balance}€`;
+const calcDisplayBalance = function (acc) {
+  acc.balance = acc.movements.reduce((acc, move) => acc + move, 0);
+  labelBalance.textContent = `${acc.balance}€`;
 };
 
 //Display summary of account
@@ -117,6 +117,17 @@ const createUsernames = function (accounts) {
 
 createUsernames(accounts);
 
+// Update UI
+
+const UpdateUI = function (acc) {
+  // Display movements
+  displayMovements(acc.movements);
+  // Display balance
+  calcDisplayBalance(acc);
+  // Display summary
+  calcDisplaySummary(acc);
+};
+
 // Implementing Login
 let currentAccount;
 btnLogin.addEventListener('click', function (e) {
@@ -134,15 +145,31 @@ btnLogin.addEventListener('click', function (e) {
     // Clear input fields
     inputLoginUsername.value = inputLoginPin.value = '';
     inputLoginPin.blur();
-    // Display movements
-    displayMovements(currentAccount.movements);
-    // Display balance
-    calcDisplayBalance(currentAccount.movements);
-    // Display summary
-    calcDisplaySummary(currentAccount);
+    UpdateUI(currentAccount);
   } else {
     labelWelcome.textContent = `Wrong username or pin! Please login with correct information`;
     containerApp.style.opacity = 0;
+  }
+});
+
+// Implementing Transfers
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputTransferAmount.value);
+  const receiverAcc = accounts.find(
+    acc => acc.username === inputTransferTo.value
+  );
+  inputTransferAmount.value = inputTransferTo.value = '';
+
+  if (
+    amount > 0 &&
+    receiverAcc &&
+    currentAccount.balance >= amount &&
+    receiverAcc?.username !== currentAccount.username
+  ) {
+    currentAccount.movements.push(-amount);
+    receiverAcc.movements.push(amount);
+    UpdateUI(currentAccount);
   }
 });
 
